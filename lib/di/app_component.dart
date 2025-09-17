@@ -7,8 +7,11 @@ import 'package:pdd_flutter_new_24_04_25/data/profile_repositories/ChangeNameRep
 import 'package:pdd_flutter_new_24_04_25/data/profile_repositories/delete_account_repository.dart';
 import 'package:pdd_flutter_new_24_04_25/data/profile_repositories/profile_repository.dart';
 import 'package:pdd_flutter_new_24_04_25/data/rank/rank_repository.dart';
+import 'package:pdd_flutter_new_24_04_25/data/video/video_repository.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_rank_use_case.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_user_profile_use_case.dart';
+import 'package:pdd_flutter_new_24_04_25/domain/get_video_all_use_case.dart';
+import 'package:pdd_flutter_new_24_04_25/domain/get_video_use_case.dart';
 
 import '../config/constans.dart';
 import '../data/registration_repositories/repository.dart';
@@ -123,7 +126,10 @@ void _configureRepositories() {
       () => ChangeNameRepository(apiClient: pddApiClient),
     )
   ..registerLazySingleton<RankRepository>(
-      () => RankRepository(apiClient: pddApiClient)
+      () => RankRepository(apiClient: pddApiClient),
+  )
+  ..registerLazySingleton<VideoRepository>(
+      () => VideoRepository(apiClient: pddApiClient),
   );
 }
 
@@ -138,6 +144,8 @@ void _configureUseCases() {
       getIt.get<ChangeNameRepository>();
   final RankRepository rankRepository =
       getIt.get<RankRepository>();
+  final VideoRepository videoRepository =
+      getIt.get<VideoRepository>();
 
   getIt
     ..registerLazySingleton<GetUserUseCase>(
@@ -152,5 +160,11 @@ void _configureUseCases() {
     )
     ..registerLazySingleton<GetRankUseCase>(
       () => GetRankUseCase(rankRepository),
+    )
+    ..registerLazySingleton<GetVideoUseCase>(
+        () => GetVideoUseCase(videoRepository),
+    )
+    ..registerLazySingleton<GetVideoAllUseCase>(
+        () => GetVideoAllUseCase(videoRepository)
     );
 }

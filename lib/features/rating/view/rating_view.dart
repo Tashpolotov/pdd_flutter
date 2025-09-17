@@ -34,7 +34,6 @@ class RatingView extends StatelessWidget {
               child: Column(
                 children: [
                   _buildHeader(_extractCurrentUser(state)),
-                  const SizedBox(height: 20),
                   Text("Рейтинг", style: AppTextStyle.text_22_black_500),
                   const SizedBox(height: 4),
                   Text(

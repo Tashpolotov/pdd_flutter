@@ -37,20 +37,15 @@ class _RegistrationViewState extends State<RegistrationView> {
             listener: (context, state) {
               state.when(
                 initial: () {
-                  print('State: initial');
                 },
                 loading: () {
-                  print('State: loading');
-                  // Показать прогресс-бар
                   AppProgressBarWrapper.of(context)?.showLoading();
                 },
                 success: (_) {
-                  print('State: success');
                   AppProgressBarWrapper.of(context)?.hideLoading();
                   context.go(AppRoutes.homePath);
                 },
                 error: (message) {
-                  print('State: error, message: $message');
                   AppProgressBarWrapper.of(context)?.hideLoading();
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
                 },

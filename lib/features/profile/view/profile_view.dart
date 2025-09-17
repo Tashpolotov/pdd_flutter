@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pdd_flutter_new_24_04_25/config/AppTextStyle.dart';
 import 'package:pdd_flutter_new_24_04_25/config/AppToast.dart';
@@ -117,7 +115,7 @@ class ProfileView extends StatelessWidget {
                         const SizedBox(height: 16),
                         isLoading
                             ? AppShimmer.profileInfo()
-                            : _RankCard(profile),
+                            : _rankCard(profile),
                         const SizedBox(height: 8),
                         isLoading
                             ? AppShimmer.lessonComplete()
@@ -182,7 +180,7 @@ class ProfileView extends StatelessWidget {
   }
 }
 
-Widget _RankCard(ProfileModel? profile) {
+Widget _rankCard(ProfileModel? profile) {
   return Container(
     width: double.infinity,
     decoration: BoxDecoration(
