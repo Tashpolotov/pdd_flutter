@@ -1,13 +1,17 @@
+import 'package:flutter/gestures.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 
 import 'package:pdd_flutter_new_24_04_25/config/SharedPrefsHelper.dart';
+import 'package:pdd_flutter_new_24_04_25/data/home/home_repository.dart';
 import 'package:pdd_flutter_new_24_04_25/data/profile_repositories/ChangeNameRepository.dart';
 import 'package:pdd_flutter_new_24_04_25/data/profile_repositories/delete_account_repository.dart';
 import 'package:pdd_flutter_new_24_04_25/data/profile_repositories/profile_repository.dart';
 import 'package:pdd_flutter_new_24_04_25/data/rank/rank_repository.dart';
 import 'package:pdd_flutter_new_24_04_25/data/video/video_repository.dart';
+import 'package:pdd_flutter_new_24_04_25/domain/get_level_use_case.dart';
+import 'package:pdd_flutter_new_24_04_25/domain/get_list_level_use_case.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_rank_use_case.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_user_profile_use_case.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_video_all_use_case.dart';
@@ -71,11 +75,16 @@ void _configureNetworkDependencies() {
   dio.interceptors.add(
     LogInterceptor(
       request: true,
-      requestBody: true,     //  не логировать тело запроса
-      requestHeader: false,   //  не логировать заголовки запроса
-      responseBody: true,    //  не логировать тело ответа
-      responseHeader: false,  //  не логировать заголовки ответа
-      error: true,            //  логировать ошибки
+      requestBody: true,
+      //  не логировать тело запроса
+      requestHeader: false,
+      //  не логировать заголовки запроса
+      responseBody: true,
+      //  не логировать тело ответа
+      responseHeader: false,
+      //  не логировать заголовки ответа
+      error: true,
+      //  логировать ошибки
       logPrint: (log) {
         final logStr = log.toString();
 
@@ -125,12 +134,15 @@ void _configureRepositories() {
     ..registerLazySingleton<ChangeNameRepository>(
       () => ChangeNameRepository(apiClient: pddApiClient),
     )
-  ..registerLazySingleton<RankRepository>(
+    ..registerLazySingleton<RankRepository>(
       () => RankRepository(apiClient: pddApiClient),
-  )
-  ..registerLazySingleton<VideoRepository>(
+    )
+    ..registerLazySingleton<VideoRepository>(
       () => VideoRepository(apiClient: pddApiClient),
-  );
+    )
+    ..registerLazySingleton<HomeRepository>(
+      () => HomeRepository(apiClient: pddApiClient),
+    );
 }
 
 /// ⚙ UseCase-слой
@@ -142,12 +154,12 @@ void _configureUseCases() {
       getIt.get<DeleteAccountRepository>();
   final ChangeNameRepository changeNameRepository =
       getIt.get<ChangeNameRepository>();
-  final RankRepository rankRepository =
-      getIt.get<RankRepository>();
-  final VideoRepository videoRepository =
-      getIt.get<VideoRepository>();
-
+  final RankRepository rankRepository = getIt.get<RankRepository>();
+  final VideoRepository videoRepository = getIt.get<VideoRepository>();
+  final HomeRepository homeRepository = getIt.get<HomeRepository>();
+      getIt.get<HomeRepository>();
   getIt
+
     ..registerLazySingleton<GetUserUseCase>(
       () => GetUserUseCase(registrationRepository),
     )
@@ -162,9 +174,15 @@ void _configureUseCases() {
       () => GetRankUseCase(rankRepository),
     )
     ..registerLazySingleton<GetVideoUseCase>(
-        () => GetVideoUseCase(videoRepository),
+      () => GetVideoUseCase(videoRepository),
     )
     ..registerLazySingleton<GetVideoAllUseCase>(
-        () => GetVideoAllUseCase(videoRepository)
+      () => GetVideoAllUseCase(videoRepository),
+    )
+    ..registerLazySingleton<GetLevelUseCase>(
+        () => GetLevelUseCase(homeRepository)
+    )
+    ..registerLazySingleton<GetListLevelUseCase>(
+        () => GetListLevelUseCase(homeRepository)
     );
 }

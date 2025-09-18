@@ -8,6 +8,7 @@ import 'package:pdd_flutter_new_24_04_25/domain/get_user_profile_use_case.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_user_usecase.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_video_use_case.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_video_all_use_case.dart';
+import 'package:pdd_flutter_new_24_04_25/domain/get_level_use_case.dart';
 import 'config/AppRoutes.dart';
 import 'di/app_component.dart';
 
@@ -40,6 +41,9 @@ class AppWithProviders extends StatelessWidget {
         ),
         Provider<GetVideoAllUseCase>(
           create: (_) => GetIt.instance<GetVideoAllUseCase>(),
+        ),
+        Provider<GetLevelUseCase>(
+          create: (_) => GetIt.instance<GetLevelUseCase>(),
         ),
       ],
       child: const App(),

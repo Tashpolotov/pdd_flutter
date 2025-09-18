@@ -28,7 +28,7 @@ class _PddApiClient implements PddApiClient {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'api/v1/registration/',
+            '/api/v1/registration',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -55,7 +55,7 @@ class _PddApiClient implements PddApiClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'api/v1/profile',
+            '/api/v1/profile',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -82,7 +82,7 @@ class _PddApiClient implements PddApiClient {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'api/v1/profile',
+            '/api/v1/profile',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -110,7 +110,7 @@ class _PddApiClient implements PddApiClient {
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/profile/',
+            '/api/v1/profile',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -137,7 +137,7 @@ class _PddApiClient implements PddApiClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'api/v1/top-ratings/',
+            '/api/v1/top-ratings',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -167,7 +167,7 @@ class _PddApiClient implements PddApiClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/categories/',
+            '/api/v1/categories',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -213,6 +213,71 @@ class _PddApiClient implements PddApiClient {
           _result.data!
               .map(
                 (dynamic i) => VideoModel.fromJson(i as Map<String, dynamic>),
+              )
+              .toList();
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<List<LessonModel>> getAllLevelCard() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<List<LessonModel>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/v1/level',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<LessonModel> _value;
+    try {
+      _value =
+          _result.data!
+              .map(
+                (dynamic i) => LessonModel.fromJson(i as Map<String, dynamic>),
+              )
+              .toList();
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<List<ListLessonModel>> getListLesson(int levelId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<List<ListLessonModel>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/v1/level/${levelId}/lessons/',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<ListLessonModel> _value;
+    try {
+      _value =
+          _result.data!
+              .map(
+                (dynamic i) =>
+                    ListLessonModel.fromJson(i as Map<String, dynamic>),
               )
               .toList();
     } on Object catch (e, s) {
