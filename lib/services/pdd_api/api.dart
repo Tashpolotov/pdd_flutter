@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:pdd_flutter_new_24_04_25/models/main/lesson/ListLessonModel.dart';
+import 'package:pdd_flutter_new_24_04_25/models/main/test/TestModel.dart';
 import 'package:pdd_flutter_new_24_04_25/models/profile/DeleteModel.dart';
 import 'package:pdd_flutter_new_24_04_25/models/profile/ProfileModel.dart';
 import 'package:pdd_flutter_new_24_04_25/models/rank/RankModel.dart';
@@ -47,5 +48,8 @@ abstract class PddApiClient {
 
   @GET("${baseApi}level/{level_pk}/lessons/")
   Future<List<ListLessonModel>> getListLesson(@Path('level_pk') int levelId);
+
+  @GET("${baseApi}level/{level_pk}/test/")
+  Future<TestModel> getTest(@Path('level_pk') int levelId);
 
 }

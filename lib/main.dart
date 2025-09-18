@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pdd_flutter_new_24_04_25/domain/get_list_level_use_case.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pdd_flutter_new_24_04_25/App.dart';
@@ -45,6 +46,9 @@ class AppWithProviders extends StatelessWidget {
         Provider<GetLevelUseCase>(
           create: (_) => GetIt.instance<GetLevelUseCase>(),
         ),
+        Provider<GetListLevelUseCase>(
+          create: (_) => GetIt.instance<GetListLevelUseCase>(),
+        )
       ],
       child: const App(),
     );

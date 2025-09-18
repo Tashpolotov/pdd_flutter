@@ -129,11 +129,11 @@ class HomeView extends StatelessWidget {
             child: LevelProgressCard(
               level: lesson.name,
               theme: lesson.description,
-              progressText: "${lesson.points.userPoints} из ${lesson.points.levelPoints}",
-              progressValue: lesson.points.userPoints / lesson.points.levelPoints,
+              progressText: "${lesson.points?.userPoints ?? 0} из ${lesson.points.levelPoints ?? 1}",
+              progressValue: (lesson.points?.userPoints ?? 0) / (lesson.points.levelPoints ?? 1),
               lessonsText: "Пройдено уроков: ${lesson.passedLesson.userLesson} из ${lesson.passedLesson.levelLesson}",
                 onSeeLessonsPressed: () {
-                  context.push(AppRoutes.lessonPath);
+                  context.push(AppRoutes.lessonPath, extra: lesson.id);
                 },
             ),
           );

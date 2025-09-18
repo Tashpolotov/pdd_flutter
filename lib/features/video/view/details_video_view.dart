@@ -24,7 +24,7 @@ class _DetailsVideoViewState extends State<DetailsVideoView> {
 
     return Scaffold(
       backgroundColor: AppColors.app_background,
-      appBar: AppbarCustom(titleAppBar: "ивдео сооав"),
+      appBar: AppbarCustom(titleAppBar: "Смотреть видео"),
       body: BlocProvider(
         create: (context) =>
         VideoAllCubit(context.read<GetVideoAllUseCase>())

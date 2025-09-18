@@ -4,29 +4,34 @@ part 'ListLessonModel.g.dart';
 
 @JsonSerializable()
 class ListLessonModel {
-  final int id;
-  final String title;
-  final int order;
-  final bool available;
+  final int? id;
+  final String? title;
+  final int? order;
+  final bool? available;
+
   @JsonKey(name: 'is_passed')
-  final bool isPassed;
-  final PointsModel poinsts;
+  final bool? isPassed;
+
+  final PointsModel? points;
+
   @JsonKey(name: 'is_lesson')
-  final bool isLesson;
+  final bool? isLesson;
+
   @JsonKey(name: 'level_name')
-  final String levelName;
+  final String? levelName;
 
   ListLessonModel({
-    required this.order,
-    required this.available,
-    required this.id,
-    required this.title,
-    required this.isLesson,
-    required this.isPassed,
-    required this.levelName,
-    required this.poinsts,
+    this.order,
+    this.available,
+    this.id,
+    this.title,
+    this.isLesson,
+    this.isPassed,
+    this.levelName,
+    this.points,
   });
 
-  factory ListLessonModel.fromJson(Map<String, dynamic> json) => _$ListLessonModelFromJson(json);
+  factory ListLessonModel.fromJson(Map<String, dynamic> json) =>
+      _$ListLessonModelFromJson(json);
   Map<String, dynamic> toJson() => _$ListLessonModelToJson(this);
 }
