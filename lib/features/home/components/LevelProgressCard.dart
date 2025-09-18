@@ -24,7 +24,7 @@ class LevelProgressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.blue.shade700,
         borderRadius: BorderRadius.circular(16),
@@ -97,7 +97,6 @@ class LevelProgressCard extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
             ),
             onPressed: onSeeLessonsPressed,
             child: const Text(
