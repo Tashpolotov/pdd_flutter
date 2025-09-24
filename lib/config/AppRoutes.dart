@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pdd_flutter_new_24_04_25/features/home/view/game/view/game_view.dart';
+import 'package:pdd_flutter_new_24_04_25/features/home/view/result/view/result_view.dart';
 import 'package:pdd_flutter_new_24_04_25/features/profile/view/profile_view.dart';
 import 'package:pdd_flutter_new_24_04_25/features/rating/view/rating_view.dart';
 import 'package:pdd_flutter_new_24_04_25/features/registration/on_boarding_view.dart';
@@ -22,6 +24,8 @@ class AppRoutes {
   static const String videoDetailPath = '/video-detail';
   static const String videoPlayerPath = '/video_player';
   static const String lessonPath = '/lesson';
+  static const String gamePath = '/game';
+  static const String resultPath = '/result';
 }
 
 class AppRoutesHelper {
@@ -72,6 +76,20 @@ class AppRoutesHelper {
               return const LessonView();
             },
           ),
+        GoRoute(
+          path: AppRoutes.gamePath,
+          parentNavigatorKey: parentNavigatorKey,
+          builder: (context, state) {
+            return const GameView();
+          },
+        ),
+        GoRoute(
+          path: AppRoutes.resultPath,
+          parentNavigatorKey: parentNavigatorKey,
+          builder: (context, state) {
+            return const ResultView();
+          },
+        ),
         ShellRoute(
           builder: (context, state, child) => BottomBar(child: child),
           routes: [

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pdd_flutter_new_24_04_25/config/AppColors.dart';
 import 'package:pdd_flutter_new_24_04_25/config/AppTextStyle.dart';
 import 'package:pdd_flutter_new_24_04_25/config/CommonState.dart';
-import 'package:pdd_flutter_new_24_04_25/domain/get_rank_use_case.dart';
 import 'package:pdd_flutter_new_24_04_25/features/rating/state/rank_cubit.dart';
 import 'package:pdd_flutter_new_24_04_25/models/rank/RankModel.dart';
+import 'package:pdd_flutter_new_24_04_25/core/extensions/common_state_extensions.dart';
+import 'package:pdd_flutter_new_24_04_25/core/extensions/context_extensions.dart';
 import '../../../config/AppShimmer.dart';
 import '../../../gen/assets.gen.dart';
 import '../components/users_rating.dart';
@@ -20,13 +21,11 @@ class RatingView extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.app_background,
       body: BlocProvider(
-        create: (context) => RankCubit(context.read<GetRankUseCase>()),
+        create: (_) => GetIt.instance<RankCubit>(),
         child: BlocConsumer<RankCubit, CommonState<List<RankModel>>>(
           listener: (context, state) {
-            if (state is Error) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text((state as Error).message)));
+            if (state.isError) {
+              context.showErrorSnackBar(state.errorMessage!);
             }
           },
           builder: (context, state) {
@@ -42,25 +41,29 @@ class RatingView extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Expanded(
-                    child: switch (state) {
-                      Loading() => Center(child: AppShimmer.profileInfo()),
-                      Error(:final message) => Center(child: Text(message)),
-                      Success(:final data) when data.isEmpty => Center(
-                        child: Text("Нет данных для отображения"),
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        context.read<RankCubit>().refresh();
+                      },
+                      child: state.when(
+                        initial: () => const Center(),
+                        loading: () => Center(child: AppShimmer.profileInfo()),
+                        error: (message) => Center(child: Text('Ошибка: $message')),
+                        success: (data) => data.isEmpty
+                            ? const Center(child: Text("Нет данных для отображения"))
+                            : ListView.builder(
+                                itemCount: data.length,
+                                itemBuilder: (context, index) {
+                                  final user = data[index];
+                                  return UsersRating(
+                                    rankModel: user,
+                                    position: index + 1,
+                                    isCurrentUser: user.isCurrentUser,
+                                  );
+                                },
+                              ),
                       ),
-                      Success(:final data) => ListView.builder(
-                        itemCount: data.length,
-                        itemBuilder: (context, index) {
-                          final user = data[index];
-                          return UsersRating(
-                            rankModel: user,
-                            position: index + 1,
-                            isCurrentUser: user.isCurrentUser,
-                          );
-                        },
-                      ),
-                      _ => SizedBox.shrink(),
-                    },
+                    ),
                   ),
                 ],
               ),
@@ -72,8 +75,8 @@ class RatingView extends StatelessWidget {
   }
 
   (RankModel?, int) _extractCurrentUser(CommonState<List<RankModel>> state) {
-    if (state is Success<List<RankModel>>) {
-      final rankings = state.data;
+    final rankings = state.dataOrNull;
+    if (rankings != null) {
       for (int i = 0; i < rankings.length; i++) {
         if (rankings[i].isCurrentUser) {
           return (rankings[i], i + 1);

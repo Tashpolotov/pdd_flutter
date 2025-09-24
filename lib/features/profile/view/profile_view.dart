@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pdd_flutter_new_24_04_25/config/AppTextStyle.dart';
 import 'package:pdd_flutter_new_24_04_25/config/AppToast.dart';
 import 'package:pdd_flutter_new_24_04_25/config/App_dialog.dart';
 import 'package:pdd_flutter_new_24_04_25/config/CommonState.dart';
-import 'package:pdd_flutter_new_24_04_25/domain/get_user_profile_use_case.dart';
+import 'package:pdd_flutter_new_24_04_25/core/extensions/common_state_extensions.dart';
+import 'package:pdd_flutter_new_24_04_25/core/extensions/context_extensions.dart';
 import 'package:pdd_flutter_new_24_04_25/features/profile/components/lesson_complete.dart';
 import 'package:pdd_flutter_new_24_04_25/features/profile/state/profile_cubit.dart';
 import 'package:pdd_flutter_new_24_04_25/models/profile/ProfileModel.dart';
@@ -24,26 +26,18 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.app_background,
+  
       body: BlocProvider(
-        create:
-            (context) => ProfileCubit(context.read<GetUserProfileUseCase>()),
+        create: (_) => GetIt.instance<ProfileCubit>(),
         child: BlocConsumer<ProfileCubit, CommonState<ProfileModel>>(
           listener: (context, state) {
-            if (state is Error) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text((state as Error).message)));
+            if (state.isError) {
+              context.showErrorSnackBar(state.errorMessage!);
             }
           },
           builder: (context, state) {
-            ProfileModel? profile;
-            bool isLoading = false;
-
-            if (state is Loading) {
-              isLoading = true;
-            } else if (state is Success<ProfileModel>) {
-              profile = state.data;
-            }
+            final profile = state.dataOrNull;
+            final isLoading = state.isLoading;
 
             return Stack(
               children: [

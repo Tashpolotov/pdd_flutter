@@ -6,11 +6,13 @@ import '../../../gen/assets.gen.dart';
 class AppbarCustom extends StatelessWidget implements PreferredSizeWidget {
   final String titleAppBar;
   final bool showBackButton;
+  final VoidCallback? clickBackButton;
 
   const AppbarCustom({
     super.key,
     required this.titleAppBar,
     this.showBackButton = true,
+    this.clickBackButton,
   });
 
   @override
@@ -27,7 +29,11 @@ class AppbarCustom extends StatelessWidget implements PreferredSizeWidget {
       leading: showBackButton
           ? IconButton(
         onPressed: () {
-          Navigator.of(context).pop();
+          if(clickBackButton != null) {
+            clickBackButton!();
+          } else {
+            Navigator.of(context).pop();
+          }
         },
         icon: SvgPicture.asset(
           Assets.images.arrowLeft.path,

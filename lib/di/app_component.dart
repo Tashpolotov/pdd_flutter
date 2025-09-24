@@ -12,14 +12,24 @@ import 'package:pdd_flutter_new_24_04_25/data/rank/rank_repository.dart';
 import 'package:pdd_flutter_new_24_04_25/data/video/video_repository.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_level_use_case.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_list_level_use_case.dart';
+import 'package:pdd_flutter_new_24_04_25/domain/get_questions_use_case.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_rank_use_case.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_user_profile_use_case.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_video_all_use_case.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_video_use_case.dart';
+import 'package:pdd_flutter_new_24_04_25/features/rating/state/rank_cubit.dart';
+import 'package:pdd_flutter_new_24_04_25/features/profile/state/profile_cubit.dart';
+import 'package:pdd_flutter_new_24_04_25/features/video/state/video_cubit.dart';
+import 'package:pdd_flutter_new_24_04_25/features/video/state/video_all_cubit.dart';
+import 'package:pdd_flutter_new_24_04_25/features/registration/register/state/registration_cubit.dart';
+import 'package:pdd_flutter_new_24_04_25/features/home/state/level_cubit.dart';
+import 'package:pdd_flutter_new_24_04_25/features/home/view/lesson/state/lesson_cubit.dart';
+import 'package:pdd_flutter_new_24_04_25/features/home/view/lesson/state/test_cubit.dart';
 
 import '../config/constans.dart';
 import '../data/registration_repositories/repository.dart';
 import '../domain/get_user_usecase.dart';
+import '../features/home/view/game/state/questions_cubit.dart';
 import '../services/pdd_api/api.dart';
 
 final getIt = GetIt.instance;
@@ -40,6 +50,7 @@ Future<void> configureDependencies() async {
   _configureApiClients();
   _configureRepositories();
   _configureUseCases();
+  _configureCubits();
 }
 
 ///  Сетевой слой + логгирование Dio
@@ -157,7 +168,6 @@ void _configureUseCases() {
   final RankRepository rankRepository = getIt.get<RankRepository>();
   final VideoRepository videoRepository = getIt.get<VideoRepository>();
   final HomeRepository homeRepository = getIt.get<HomeRepository>();
-      getIt.get<HomeRepository>();
   getIt
 
     ..registerLazySingleton<GetUserUseCase>(
@@ -184,5 +194,39 @@ void _configureUseCases() {
     )
     ..registerLazySingleton<GetListLevelUseCase>(
         () => GetListLevelUseCase(homeRepository)
+    )
+    ..registerLazySingleton<GetQuestionsUseCase>(
+        () => GetQuestionsUseCase(homeRepository)
+    );
+}
+
+void _configureCubits() {
+  getIt
+    ..registerFactory<RankCubit>(
+      () => RankCubit(getIt.get<GetRankUseCase>()),
+    )
+    ..registerFactory<ProfileCubit>(
+      () => ProfileCubit(getIt.get<GetUserProfileUseCase>()),
+    )
+    ..registerFactory<VideoCubit>(
+      () => VideoCubit(getIt.get<GetVideoUseCase>()),
+    )
+    ..registerFactory<VideoAllCubit>(
+      () => VideoAllCubit(getIt.get<GetVideoAllUseCase>()),
+    )
+    ..registerFactory<RegistrationCubit>(
+      () => RegistrationCubit(getIt.get<GetUserUseCase>()),
+    )
+    ..registerFactory<LevelCubit>(
+      () => LevelCubit(getIt.get<GetLevelUseCase>()),
+    )
+    ..registerFactory<LessonCubit>(
+      () => LessonCubit(getIt.get<GetListLevelUseCase>()),
+    )
+    ..registerFactory<TestCubit>(
+      () => TestCubit(getIt.get<GetListLevelUseCase>()),
+    )
+    ..registerFactory<QuestionsCubit>(
+        () => QuestionsCubit(getIt.get<GetQuestionsUseCase>())
     );
 }

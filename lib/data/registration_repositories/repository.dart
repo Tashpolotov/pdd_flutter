@@ -12,11 +12,24 @@ class RegistrationRepository {
 
   Future<RegistrationModel> getUser(String username) async {
     try {
-      final response = await apiClient.getUser(UserModel(username: username));
+      print('🚀 Отправляем регистрацию для пользователя: $username');
+      final userModel = UserModel(username: username);
+      print('📦 UserModel JSON: ${userModel.toJson()}');
+      
+      final response = await apiClient.getUser(userModel);
+      
+      print('✅ Успешный ответ от сервера');
       String accessToken = response.access.toString();
       SharedPrefsHelper.setToken(accessToken);
       return response;
     } catch (e) {
+      print('❌ Ошибка регистрации: $e');
+      if (e is DioException) {
+        print('📊 Status Code: ${e.response?.statusCode}');
+        print('📝 Response data: ${e.response?.data}');
+        print('🔗 Request URL: ${e.requestOptions.uri}');
+        print('📤 Request data: ${e.requestOptions.data}');
+      }
       rethrow;
     }
   }

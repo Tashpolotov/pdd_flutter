@@ -1,30 +1,35 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/foundation.dart';
 import '../../../../config/CommonState.dart';
+import '../../../../core/base/base_cubit.dart';
 import '../../../../domain/get_user_usecase.dart';
 
-class RegistrationCubit extends Cubit<CommonState<void>> {
+class RegistrationCubit extends BaseCubit<void> {
   final GetUserUseCase _getUserUseCase;
 
-  RegistrationCubit(this._getUserUseCase) : super(const CommonState.initial());
+  RegistrationCubit(this._getUserUseCase);
 
+  /// Регистрация пользователя
   Future<void> registerUser(String username) async {
     if (username.isEmpty) {
       emit(const CommonState.error("Имя не может быть пустым"));
       return;
     }
 
-    emit(const CommonState.loading());
-    await Future.delayed(const Duration(seconds: 2));
-    try {
+    safeExecute(() async {
+      await Future.delayed(const Duration(seconds: 2));
       final response = await _getUserUseCase.execute(username);
-
-      if (response != null) {
-        emit(const CommonState.success(null));
-      } else {
-        emit(const CommonState.error("Ошибка регистрации"));
+      
+      if (response == null) {
+        throw Exception("Ошибка регистрации");
       }
-    } catch (e) {
-      emit(CommonState.error("Ошибка: ${e.toString()}"));
-    }
+      
+      return; // void return
+    });
+  }
+
+  /// Обновление данных (refresh)
+  @override
+  void refresh() {
+    // Для регистрации refresh не нужен
   }
 }
