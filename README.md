@@ -3,6 +3,7 @@
 A new Flutter project.
 
 ## Getting Started
+- первый проект на флаттере 
 
 This project is a starting point for a Flutter application.
 
