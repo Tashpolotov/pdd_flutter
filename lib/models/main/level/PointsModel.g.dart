@@ -7,8 +7,8 @@ part of 'PointsModel.dart';
 // **************************************************************************
 
 PointsModel _$PointsModelFromJson(Map<String, dynamic> json) => PointsModel(
-  userPoints: (json['user_points'] as num).toInt(),
-  levelPoints: (json['level_points'] as num).toInt(),
+  userPoints: (json['user_points'] as num?)?.toInt(),
+  levelPoints: (json['level_points'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$PointsModelToJson(PointsModel instance) =>

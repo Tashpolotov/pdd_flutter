@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pdd_flutter_new_24_04_25/config/AppColors.dart';
 import 'package:pdd_flutter_new_24_04_25/config/AppRoutes.dart';
 import 'package:pdd_flutter_new_24_04_25/config/CommonState.dart';
 import 'package:pdd_flutter_new_24_04_25/config/appbar_custom.dart';
-import 'package:pdd_flutter_new_24_04_25/domain/get_video_all_use_case.dart';
+import 'package:pdd_flutter_new_24_04_25/core/extensions/common_state_extensions.dart';
+import 'package:pdd_flutter_new_24_04_25/core/extensions/context_extensions.dart';
 import 'package:pdd_flutter_new_24_04_25/features/video/state/video_all_cubit.dart';
 import 'package:pdd_flutter_new_24_04_25/models/video/VideoModel.dart';
 import '../components/video_component.dart';
@@ -24,27 +26,33 @@ class _DetailsVideoViewState extends State<DetailsVideoView> {
 
     return Scaffold(
       backgroundColor: AppColors.app_background,
-      appBar: AppbarCustom(titleAppBar: "ивдео сооав"),
-      body: BlocProvider(
-        create: (context) =>
-        VideoAllCubit(context.read<GetVideoAllUseCase>())
-          ..getVideos(subcategoryId),
+      appBar: AppbarCustom(titleAppBar: "Смотреть видео"),
+      body: BlocProvider(create: (_) => GetIt.instance<VideoAllCubit>()..getVideos(subcategoryId),
         child: BlocConsumer<VideoAllCubit, CommonState<List<VideoModel>>>(
           listener: (context, state) {
-            if (state is Error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text((state as Error).message)),
-              );
+            if (state.isError) {
+              context.showErrorSnackBar(state.errorMessage!);
             }
           },
           builder: (context, state) {
-            if (state is Loading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (state is Success<List<VideoModel>>) {
-              final videos = state.data;
-              return SafeArea(
+            return switch (state) {
+              Loading() => const Center(child: CircularProgressIndicator()),
+              Error(:final message) => Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Ошибка: $message'),
+                    ElevatedButton(
+                      onPressed: () => context.read<VideoAllCubit>().refresh(),
+                      child: const Text('Повторить'),
+                    ),
+                  ],
+                ),
+              ),
+              Success(:final data) when data.isEmpty => const Center(
+                child: Text('Нет видео в данной категории'),
+              ),
+              Success(:final data) => SafeArea(
                 child: Column(
                   children: [
                     Padding(
@@ -56,7 +64,7 @@ class _DetailsVideoViewState extends State<DetailsVideoView> {
                     ),
                     Expanded(
                       child: VideoComponent(
-                        videos: videos,
+                        videos: data,
                         onVideoTap: (video) {
                           context.push(
                             AppRoutes.videoPlayerPath,
@@ -67,10 +75,9 @@ class _DetailsVideoViewState extends State<DetailsVideoView> {
                     ),
                   ],
                 ),
-              );
-            }
-
-            return const SizedBox();
+              ),
+              _ => const SizedBox.shrink(),
+            };
           },
         ),
       ),

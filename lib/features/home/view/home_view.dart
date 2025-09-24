@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import '../../../config/AppColors.dart';
 import '../../../config/AppRoutes.dart';
 import '../../../config/CommonState.dart';
 import '../../../config/appbar_custom.dart';
-import '../../../domain/get_level_use_case.dart';
+import '../../../core/extensions/common_state_extensions.dart';
+import '../../../core/extensions/context_extensions.dart';
 import '../../../gen/assets.gen.dart';
 import '../../../generated/l10n.dart';
 import '../../../models/main/level/LessonModel.dart';
@@ -27,13 +28,11 @@ class HomeView extends StatelessWidget {
         showBackButton: false,
       ),
       body: BlocProvider(
-        create: (context) => LevelCubit(context.read<GetLevelUseCase>()),
+        create: (_) => GetIt.instance<LevelCubit>(),
         child: BlocConsumer<LevelCubit, CommonState<List<LessonModel>>>(
           listener: (context, state) {
-            if (state is Error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text((state as Error).message)),
-              );
+            if (state.isError) {
+              context.showErrorSnackBar(state.errorMessage!);
             }
           },
           builder: (context, state) {
@@ -112,7 +111,6 @@ class HomeView extends StatelessWidget {
   }
 
   Widget _buildLevelsFromData(BuildContext context, List<LessonModel> lessons) {
-    final screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(
       height: 250.h,
       child: PageView.builder(
@@ -129,11 +127,11 @@ class HomeView extends StatelessWidget {
             child: LevelProgressCard(
               level: lesson.name,
               theme: lesson.description,
-              progressText: "${lesson.points.userPoints} из ${lesson.points.levelPoints}",
-              progressValue: lesson.points.userPoints / lesson.points.levelPoints,
+              progressText: "${lesson.points.userPoints ?? 0} из ${lesson.points.levelPoints ?? 1}",
+              progressValue: (lesson.points.userPoints ?? 0) / (lesson.points.levelPoints ?? 1),
               lessonsText: "Пройдено уроков: ${lesson.passedLesson.userLesson} из ${lesson.passedLesson.levelLesson}",
                 onSeeLessonsPressed: () {
-                  context.push(AppRoutes.lessonPath);
+                  context.pushWithExtra(AppRoutes.lessonPath, lesson.id);
                 },
             ),
           );

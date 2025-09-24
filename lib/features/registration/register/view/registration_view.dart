@@ -5,13 +5,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pdd_flutter_new_24_04_25/config/AppProgressBar.dart';
+import 'package:pdd_flutter_new_24_04_25/core/extensions/context_extensions.dart';
 import '../../../../config/AppButton.dart';
 import '../../../../config/AppColors.dart';
 import '../../../../config/AppRoutes.dart';
 import '../../../../config/AppTextField.dart';
 import '../../../../config/AppTextStyle.dart';
 import '../../../../config/CommonState.dart';
-import '../../../../domain/get_user_usecase.dart';
 import '../../../../gen/assets.gen.dart';
 import '../state/registration_cubit.dart';
 
@@ -32,7 +32,7 @@ class _RegistrationViewState extends State<RegistrationView> {
       backgroundColor: AppColors.app_background,
       body: Center(
         child: BlocProvider(
-          create: (context) => RegistrationCubit(context.read<GetUserUseCase>()),
+          create: (_) => GetIt.instance<RegistrationCubit>(),
           child: BlocConsumer<RegistrationCubit, CommonState<void>>(
             listener: (context, state) {
               state.when(
@@ -43,11 +43,11 @@ class _RegistrationViewState extends State<RegistrationView> {
                 },
                 success: (_) {
                   AppProgressBarWrapper.of(context)?.hideLoading();
-                  context.go(AppRoutes.homePath);
+                  context.goToRoute(AppRoutes.homePath);
                 },
                 error: (message) {
                   AppProgressBarWrapper.of(context)?.hideLoading();
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+                  context.showErrorSnackBar(message);
                 },
               );
             },
@@ -102,9 +102,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                       if (username.isNotEmpty) {
                         context.read<RegistrationCubit>().registerUser(username);
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Введите имя')),
-                        );
+                        context.showErrorSnackBar('Введите имя');
                       }
                     },
                   ),

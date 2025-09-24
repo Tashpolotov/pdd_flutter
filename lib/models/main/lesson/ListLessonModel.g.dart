@@ -8,14 +8,17 @@ part of 'ListLessonModel.dart';
 
 ListLessonModel _$ListLessonModelFromJson(Map<String, dynamic> json) =>
     ListLessonModel(
-      order: (json['order'] as num).toInt(),
-      available: json['available'] as bool,
-      id: (json['id'] as num).toInt(),
-      title: json['title'] as String,
-      isLesson: json['is_lesson'] as bool,
-      isPassed: json['is_passed'] as bool,
-      levelName: json['level_name'] as String,
-      poinsts: PointsModel.fromJson(json['poinsts'] as Map<String, dynamic>),
+      order: (json['order'] as num?)?.toInt(),
+      available: json['available'] as bool?,
+      id: (json['id'] as num?)?.toInt(),
+      title: json['title'] as String?,
+      isLesson: json['is_lesson'] as bool?,
+      isPassed: json['is_passed'] as bool?,
+      levelName: json['level_name'] as String?,
+      points:
+          json['points'] == null
+              ? null
+              : PointsModel.fromJson(json['points'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ListLessonModelToJson(ListLessonModel instance) =>
@@ -25,7 +28,7 @@ Map<String, dynamic> _$ListLessonModelToJson(ListLessonModel instance) =>
       'order': instance.order,
       'available': instance.available,
       'is_passed': instance.isPassed,
-      'poinsts': instance.poinsts,
+      'points': instance.points,
       'is_lesson': instance.isLesson,
       'level_name': instance.levelName,
     };

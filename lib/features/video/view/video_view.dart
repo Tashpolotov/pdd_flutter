@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pdd_flutter_new_24_04_25/config/AppColors.dart';
 import 'package:pdd_flutter_new_24_04_25/config/AppTextStyle.dart';
 import 'package:pdd_flutter_new_24_04_25/config/CommonState.dart';
+import 'package:pdd_flutter_new_24_04_25/core/extensions/common_state_extensions.dart';
+import 'package:pdd_flutter_new_24_04_25/core/extensions/context_extensions.dart';
 import 'package:pdd_flutter_new_24_04_25/domain/get_video_use_case.dart';
 import 'package:pdd_flutter_new_24_04_25/features/video/state/video_cubit.dart';
 import 'package:pdd_flutter_new_24_04_25/features/video/components/category_pdd.dart';
@@ -17,13 +20,11 @@ class VideoView extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.app_background,
       body: BlocProvider(
-        create: (context) => VideoCubit(context.read<GetVideoUseCase>()),
+        create: (_) => GetIt.instance<VideoCubit>(),
         child: BlocConsumer<VideoCubit, CommonState<List<CategoryModel>>>(
           listener: (context, state) {
-            if (state is Error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text((state as Error).message)),
-              );
+            if (state.isError) {
+              context.showErrorSnackBar(state.errorMessage!);
             }
           },
           builder: (context, state) {
@@ -63,7 +64,7 @@ class VideoView extends StatelessWidget {
                           return CategoryPdd(
                             categoryModel: data[index],
                             onSubcategoryTap: (subcategoryId) {
-                              context.push('/video-detail', extra: subcategoryId);
+                              context.pushWithExtra('/video-detail', subcategoryId);
                             },
                           );
                         },

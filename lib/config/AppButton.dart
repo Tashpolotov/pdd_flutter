@@ -4,9 +4,17 @@ import 'AppTextStyle.dart';
 
 class AppButton extends StatelessWidget {
   final String buttonText;
-  final VoidCallback onClick;
+  final VoidCallback? onClick;
+  final Color? backgroundColor;
+  final Color? textColor;
 
-  const AppButton({super.key, required this.buttonText, required this.onClick});
+  const AppButton({
+    super.key,
+    required this.buttonText,
+    required this.onClick,
+    this.backgroundColor,
+    this.textColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +25,7 @@ class AppButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: onClick,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.btnColor,
+            backgroundColor: backgroundColor ?? AppColors.btnColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -26,7 +34,7 @@ class AppButton extends StatelessWidget {
           child: Text(
             buttonText,
             style: AppTextStyle.text_16_color_6E6E6E_400.copyWith(
-              color: Colors.white,
+              color: textColor ?? Colors.white,
             ),
           ),
         ),
@@ -34,5 +42,3 @@ class AppButton extends StatelessWidget {
     );
   }
 }
-
-

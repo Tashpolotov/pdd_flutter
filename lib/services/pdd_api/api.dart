@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:pdd_flutter_new_24_04_25/models/main/game_model/QuestionsModel.dart';
 import 'package:pdd_flutter_new_24_04_25/models/main/lesson/ListLessonModel.dart';
+import 'package:pdd_flutter_new_24_04_25/models/main/test/TestModel.dart';
 import 'package:pdd_flutter_new_24_04_25/models/profile/DeleteModel.dart';
 import 'package:pdd_flutter_new_24_04_25/models/profile/ProfileModel.dart';
 import 'package:pdd_flutter_new_24_04_25/models/rank/RankModel.dart';
@@ -21,31 +23,39 @@ abstract class PddApiClient {
 
   static const String baseApi = "/api/v1/";
 
-  @POST('${baseApi}registration')
+  @POST('${baseApi}registration/')
   Future<RegistrationModel> getUser(@Body() UserModel username);
 
-  @GET('${baseApi}profile')
+  @GET('${baseApi}profile/')
   Future<ProfileModel> getUserInfo();
 
-  @DELETE('${baseApi}profile')
+  @DELETE('${baseApi}profile/')
   Future<DeleteModel> getDeleteUserAccount();
 
-  @PATCH('${baseApi}profile')
+  @PATCH('${baseApi}profile/')
   Future<String> changeUserName(@Body() ChangeNameModel model);
 
-  @GET('${baseApi}top-ratings')
+  @GET('${baseApi}top-ratings/')
   Future<List<RankModel>> getRankUsers();
 
-  @GET('${baseApi}categories')
+  @GET('${baseApi}categories/')
   Future<List<CategoryModel>> getVideo();
 
-  @GET('${baseApi}subcategories/{id}/videos')
+  @GET('${baseApi}subcategories/{id}/videos/')
   Future<List<VideoModel>> getAllVideo(@Path('id') int subcategoryId);
 
-  @GET('${baseApi}level')
+  @GET('${baseApi}level/')
   Future<List<LessonModel>> getAllLevelCard();
 
   @GET("${baseApi}level/{level_pk}/lessons/")
   Future<List<ListLessonModel>> getListLesson(@Path('level_pk') int levelId);
 
+  @GET("${baseApi}level/{level_pk}/test/")
+  Future<TestModel> getTest(@Path('level_pk') int levelId);
+
+  @GET("/api/v1/level/{level_pk}/lesson/{lesson_pk}/")
+  Future<List<QuestionsModel>> getQuestions(
+    @Path('level_pk') int levelId,
+    @Path('lesson_pk') int lessonId,
+  );
 }
